@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{16D02D95-4A16-47E6-B2C0-1C83B75E92C8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ContraAI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\AbstractGame.cpp" />
+    <ClCompile Include="Code\BosSniper.cpp" />
+    <ClCompile Include="Code\Box.cpp" />
+    <ClCompile Include="Code\Bridge.cpp" />
+    <ClCompile Include="Code\Bullet.cpp" />
+    <ClCompile Include="Code\Contra.cpp" />
+    <ClCompile Include="Code\EndBoss.cpp" />
+    <ClCompile Include="Code\EnemySniper.cpp" />
+    <ClCompile Include="Code\EnemyWalking.cpp" />
+    <ClCompile Include="Code\EvilTurret.cpp" />
+    <ClCompile Include="Code\Explosion.cpp" />
+    <ClCompile Include="Code\FlyingPuwerUp.cpp" />
+    <ClCompile Include="Code\GameEngine.cpp" />
+    <ClCompile Include="Code\GameScore.cpp" />
+    <ClCompile Include="Code\GameWinMain.cpp" />
+    <ClCompile Include="Code\ObjectBaseList.cpp" />
+    <ClCompile Include="Code\Player.cpp" />
+    <ClCompile Include="Code\PowerUp.cpp" />
+    <ClCompile Include="Code\PowerUpBox.cpp" />
+    <ClCompile Include="Code\RandomAgent.cpp" />
+    <ClCompile Include="Code\util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\AbstractGame.h" />
+    <ClInclude Include="Code\BosSniper.h" />
+    <ClInclude Include="Code\Box.h" />
+    <ClInclude Include="Code\Bridge.h" />
+    <ClInclude Include="Code\Bullet.h" />
+    <ClInclude Include="Code\Contra.h" />
+    <ClInclude Include="Code\EndBoss.h" />
+    <ClInclude Include="Code\EnemySniper.h" />
+    <ClInclude Include="Code\EnemyWalking.h" />
+    <ClInclude Include="Code\EvilTurret.h" />
+    <ClInclude Include="Code\Explosion.h" />
+    <ClInclude Include="Code\FlyingPuwerUp.h" />
+    <ClInclude Include="Code\GameEngine.h" />
+    <ClInclude Include="Code\GameScore.h" />
+    <ClInclude Include="Code\GameWinMain.h" />
+    <ClInclude Include="Code\ObjectBaseList.h" />
+    <ClInclude Include="Code\Player.h" />
+    <ClInclude Include="Code\PowerUp.h" />
+    <ClInclude Include="Code\PowerUpBox.h" />
+    <ClInclude Include="Code\RandomAgent.h" />
+    <ClInclude Include="Code\util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\AchtergrondMuziek.mid" />
+    <None Include="resources\Background.png" />
+    <None Include="resources\bgHit.svg" />
+    <None Include="resources\BosSniper.png" />
+    <None Include="resources\box.gif" />
+    <None Include="resources\Bridge.png" />
+    <None Include="resources\Bullet.png" />
+    <None Include="resources\Controls.txt" />
+    <None Include="resources\EndBoss.png" />
+    <None Include="resources\EnemySniper.png" />
+    <None Include="resources\EnemyWalking.gif" />
+    <None Include="resources\EvilTurret.png" />
+    <None Include="resources\Explosion.png" />
+    <None Include="resources\Explosion2.png" />
+    <None Include="resources\FlyingPuwerUp.png" />
+    <None Include="resources\Keyboard_colors.png" />
+    <None Include="resources\Keyboard_colors.psd" />
+    <None Include="resources\Player.png" />
+    <None Include="resources\PowerUp.png" />
+    <None Include="resources\powerUpBox.png" />
+    <None Include="resources\Thumbs.db" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

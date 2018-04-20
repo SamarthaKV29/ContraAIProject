@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Code">
+      <UniqueIdentifier>{0a8f55a4-2f89-4c34-9c51-cc28a67c1a28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{96468f6d-bc63-4cfa-98f4-57ba8a9e400e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\AbstractGame.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\BosSniper.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Box.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Bridge.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Bullet.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Contra.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\EndBoss.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\EnemySniper.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\EnemyWalking.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\EvilTurret.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Explosion.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\FlyingPuwerUp.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameEngine.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameScore.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameWinMain.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectBaseList.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Player.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PowerUp.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PowerUpBox.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\util.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RandomAgent.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\AbstractGame.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\BosSniper.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Box.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Bridge.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Bullet.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Contra.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\EndBoss.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\EnemySniper.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\EnemyWalking.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\EvilTurret.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Explosion.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FlyingPuwerUp.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GameEngine.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GameScore.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GameWinMain.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectBaseList.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Player.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PowerUp.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PowerUpBox.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\util.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RandomAgent.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\AchtergrondMuziek.mid">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Background.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\bgHit.svg">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\BosSniper.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\box.gif">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Bridge.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Bullet.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Controls.txt">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\EndBoss.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\EnemySniper.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\EnemyWalking.gif">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\EvilTurret.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Explosion.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Explosion2.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\FlyingPuwerUp.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Keyboard_colors.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Keyboard_colors.psd">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Player.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\PowerUp.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\powerUpBox.png">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\Thumbs.db">
+      <Filter>resources</Filter>
+    </None>
+  </ItemGroup>
+</Project>
