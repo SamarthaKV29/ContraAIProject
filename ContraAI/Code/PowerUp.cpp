@@ -73,7 +73,6 @@ void PowerUp::CollideWith( ObjectBase *colliderptr, int otherType){
 			DebugBreak();
 		}
 		m_PlayerPtr->SetPowerup(m_BulletType); // Hier is een bug!!!!!
-		gamescore.updateScore(100);
 		m_ObjectListPtr->Delete(this);
 	}
 }

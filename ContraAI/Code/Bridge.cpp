@@ -17,7 +17,7 @@ Bitmap * Bridge::m_BmpSpritePtr= 0;
 Bridge::Bridge(DOUBLE2 pos): ObjectBase(pos), m_UnderDestruction(false), 
 	m_AnimationTick(999), m_TimePerExplosion(0.6), m_PiecesLeft(PIECES)
 {
-	m_Type= TYPE_ENEMY;
+    m_Type= TYPE_BRIDGE;
 
 	int gs= 32; //GridSize
 	m_Pos.x= ((int)m_Pos.x/gs)*gs;
@@ -46,12 +46,11 @@ Bridge::~Bridge()
 
 void Bridge::CollideWith( ObjectBase *colliderptr, int otherType)
 {
-	/*switch( otherType ){
+	switch( otherType ){
 
 	case TYPE_PLAYER:
-		// 
-		break;
 
+		// 
 	case TYPE_ENEMY_BULLET:
 		// 
 		break;
@@ -59,13 +58,13 @@ void Bridge::CollideWith( ObjectBase *colliderptr, int otherType)
 	case TYPE_PLAYER_BULLET:
 		// 
 		break;
-	}//*/
+	}
 }
 
 void Bridge::Tick(double deltaTime )
 {
 	
-	if( m_PlayerPtr->GetPos().x > m_Pos.x ){ // Let The explosions begin!
+	if( m_PlayerPtr->GetPos().x - 40 > m_Pos.x ){ // Let The explosions begin!
 		m_UnderDestruction= true;
 	}
 

@@ -8,17 +8,8 @@
 //-----------------------------------------------------------------
 // Include Files
 //-----------------------------------------------------------------
-#include "Contra.h"
-#include "Box.h"
-#include "PowerUp.h"
-#include "EnemyWalking.h"
-#include "EnemySniper.h"
-#include "Bridge.h"
-#include "BosSniper.h"
-#include "PowerUpBox.h"
-#include "EvilTurret.h"
-#include "EndBoss.h"
-#include "FlyingPuwerUp.h"
+#include "Contra.h"																				
+
 
 //-----------------------------------------------------------------
 // Defines
@@ -29,22 +20,20 @@
 // Contra methods																				
 //-----------------------------------------------------------------
 
-Contra::Contra(bool xAIAgent): m_ObjectListPtr(0), m_BmpBackgroundPtr(0), 
+Contra::Contra(): m_ObjectListPtr(0), m_BmpBackgroundPtr(0), 
 	m_PersonageNum(0), m_HitTerrainPtr(0), m_ViewScale(1),
 		m_PosCamera(), m_LevelMax(), m_PlayerPtr(0), m_SpawnTime(0), m_MousePos(),
 		m_GameSize(800), m_LetsMakeSound( true )
 {
-	int i;
+	int i= 0;
 	/*for( i=0; i<NUM_SPAWNERS; ++i ){
 		m_SpawnersArr[i]= DOUBLE2();
 	}*/
-	i = 0;
+	i= 0;
 	m_SpawnersArr[i++]= DOUBLE2(500 , 81);
 	m_SpawnersArr[i++]= DOUBLE2(730 ,130);
 	m_SpawnersArr[i++]= DOUBLE2(1500,130);
 	//m_SpawnersArr[i++]= DOUBLE2();
-	gamescore.setScore(0);
-	m_AIAgent = xAIAgent;
 }
 
 Contra::~Contra(){}
@@ -53,7 +42,7 @@ void Contra::GameInitialize(HINSTANCE hInstance)
 {
 	// Set the required values
 	AbstractGame::GameInitialize(hInstance);
-	GAME_ENGINE->SetTitle("AI Agent for Contra by Emile");					
+	GAME_ENGINE->SetTitle("Contra By Emile");					
 	GAME_ENGINE->RunGameLoop(true);
 	
 	// Set the optional values
@@ -61,19 +50,18 @@ void Contra::GameInitialize(HINSTANCE hInstance)
 	GAME_ENGINE->SetHeight((int)m_GameSize);
     GAME_ENGINE->SetFrameRate(60);
 	GAME_ENGINE->SetTickPaintRatio(2);
-	
+	//GAME_ENGINE->SetKeyList(String("QSDZ") + (TCHAR) VK_SPACE);
 }
 
 void Contra::GameStart()
 {
-	
 	GAME_ENGINE->SetBitmapInterpolationModeNearestNeighbor();
 	if( m_LetsMakeSound ){
-		// verveelend muziekje, het staat uit om te debuggen.
 		m_MusicPtr= new Audio(IDR_MUSIC, "MID"); // neemt veel tijd
 		m_MusicPtr->SetVolume(20); // Heeft geen invloed :(
 		m_MusicPtr->Play(); //*/
 	}
+
 	m_BmpBackgroundPtr= new Bitmap("resources/Background.png");
 	m_LevelMax= DOUBLE2(m_BmpBackgroundPtr->GetWidth(), m_BmpBackgroundPtr->GetHeight());
 	m_ViewScale= m_LevelMax.y/GAME_ENGINE->GetHeight();
@@ -106,7 +94,7 @@ void Contra::MouseButtonAction(bool isLeft, bool isDown, int x, int y, WPARAM wP
 	m_MousePos.x= x;
 	m_MousePos.y= y;
 	m_MousePos= m_MatView.Inverse().TransformPoint(m_MousePos);
-	//OutputDebugString(String("\nclick: ")+m_MousePos.ToString());
+	OutputDebugString(String("\nclick: ")+m_MousePos.ToString());
 
 	/*if (isLeft == true && isDown == true){	
 		m_GridPtr->MouseClick(mousePos);
@@ -177,7 +165,9 @@ void Contra::GameTick(double deltaTime)
 {
 	
 	deltaTime= min( 0.007, deltaTime );
+
 	if( GAME_ENGINE->IsKeyDown(VK_ESCAPE) ) GAME_ENGINE->QuitGame();
+
 	// SCALEBLE WINDOW ------------------------------------------------------
 	if( GAME_ENGINE->IsKeyDown('O') ) m_GameSize/=1.01;
 	if( GAME_ENGINE->IsKeyDown('P') ) m_GameSize*=1.01;
@@ -211,20 +201,20 @@ void Contra::GameTick(double deltaTime)
 			if( m_SpawnersArr[i].x>schermRechtsOnder.x && m_SpawnersArr[i].x<schermRechtsOnder.x+160){
 				m_SpawnTime= 0;
 				EnemyWalking *EnemyPtr= new EnemyWalking( m_SpawnersArr[i] );
-				EnemyPtr->SetPlayerPtr(m_RandPlayer);
+				EnemyPtr->SetPlayerPtr(m_PlayerPtr);
 				m_ObjectListPtr->Add( EnemyPtr );
 			}
 		}
 	}
 
+
+	if( m_LetsMakeSound )
+		m_MusicPtr->Tick();
+
 	
-	/*if( m_LetsMakeSound )
-		m_MusicPtr->Tick(deltaTime);*/
 	m_ObjectListPtr->Tick(deltaTime); //  <- Hier
 
 	DoCameraMovement(deltaTime, m_ObjectListPtr->GetPos(m_PersonageNum));
-	
-	
 }
 
 void Contra::GamePaint(RECT rect)
@@ -233,7 +223,7 @@ void Contra::GamePaint(RECT rect)
 	matCenter		.SetAsTranslate(-GAME_ENGINE->GetWidth()/2,-GAME_ENGINE->GetHeight()/2);
 	matScale		.SetAsScale(m_ViewScale);
 	matTranslate	.SetAsTranslate(m_PosCamera);
-	m_MatView= (matCenter * matScale * matTranslate).Inverse();
+	m_MatView = (matCenter * matScale * matTranslate).Inverse();
 
 	
 	GAME_ENGINE->SetTransformMatrix(m_MatView);
@@ -270,15 +260,20 @@ void Contra::GamePaint(RECT rect)
 	//GAME_ENGINE->FillRect(-INFINITE, m_GameSize, INFINITE, INFINITE); // onder
 	GAME_ENGINE->FillRect(m_GameSize, 0, INFINITE, m_GameSize); // rechts
 
+	MATRIX3X2 xmatCenter, xmatScale, xmatTranslate, matty;
+	xmatCenter		.SetAsTranslate(-GAME_ENGINE->GetWidth()/2, -200);
+	xmatScale		.SetAsScale(m_ViewScale+0.15);
+	xmatTranslate	.SetAsTranslate(m_PosCamera);
+	matty = (xmatCenter * xmatScale * xmatTranslate).Inverse();
+
+	GAME_ENGINE->SetTransformMatrix(matty);
 	GAME_ENGINE->SetColor(255, 255, 255);
-	GAME_ENGINE->SetTransformMatrix(m_MatView);
-	GAME_ENGINE->SetFont(new TextFormat("times", 48));
-	DOUBLE2 currentPos = m_ObjectListPtr->GetPos(m_PersonageNum);
-	currentPos.x -= 2;
-	currentPos.y -= 50;
-	GAME_ENGINE->DrawString(gamescore.scoreAsText(), currentPos, 500, 400);
-	//GAME_ENGINE->DrawString(m_RandPlayer->GetEnemyDetails(), (50, 50), 100, 100);
-		
+	GAME_ENGINE->SetFont(new TextFormat("arial", 12 ));
+	DOUBLE2 curr = m_PlayerPtr->GetPos();
+	GAME_ENGINE->DrawString(gamescore.scoreAsText(), curr, 500.0, 500.0);
+	curr = DOUBLE2(curr.x, curr.y - 10);
+	GAME_ENGINE->DrawString(m_PlayerPtr->GetEnemyDetails(), curr, 500.0, 500.0);
+    GAME_ENGINE->SetTransformMatrix(m_MatView);
 }
 
 //void Contra::CallAction(Caller* callerPtr)
@@ -339,47 +334,43 @@ void Contra::DoCameraMovement(double deltaTime, DOUBLE2 playerPos)
 
 void Contra::PlaceEnemys(ObjectList * objectListPtr){
 
-	m_PlayerPtr = new Player(120, 50, m_AIAgent); // waarschijnlijk op plaats '0'
-
+	m_PlayerPtr= new AIAgentPlayer(120, 50); // waarschijnlijk op plaats '0'
 	m_PlayerPtr->SetGlobalVars(objectListPtr, m_LevelMax);
 	m_PlayerPtr->AddLevelHitRegion( m_HitTerrainPtr );
 	// word later op het einde in de list gezet
-	//m_RandPlayer = new RandomAgent(120, 50, true);
-	//m_RandPlayer->SetGlobalVars(objectListPtr, m_LevelMax);
-	//m_RandPlayer->AddLevelHitRegion(m_HitTerrainPtr);
-
-
-	//--!-----------------------------------------------------------------------------------------------------------------!/
-    PowerUpBox *PowerUpBoxPtr;  // PowerUpBox ------------------------------------------------------
 	
-	PowerUpBoxPtr= new PowerUpBox(DOUBLE2(333,150), BULLET_MITRAILLEUR); 
-	PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( PowerUpBoxPtr );
 
-	PowerUpBoxPtr= new PowerUpBox(DOUBLE2(1580,140), BULLET_FLAME);
-	PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( PowerUpBoxPtr );
+	
+	//PowerUpBox *PowerUpBoxPtr;  // PowerUpBox ------------------------------------------------------
+	//
+	//PowerUpBoxPtr= new PowerUpBox(DOUBLE2(333,150), BULLET_MITRAILLEUR); 
+	//PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( PowerUpBoxPtr );
 
-	PowerUpBoxPtr= new PowerUpBox(DOUBLE2(2290,180), BULLET_SUPER);
-	PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( PowerUpBoxPtr );
+	//PowerUpBoxPtr= new PowerUpBox(DOUBLE2(1580,140), BULLET_FLAME);
+	//PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( PowerUpBoxPtr );
+
+	//PowerUpBoxPtr= new PowerUpBox(DOUBLE2(2290,180), BULLET_SUPER);
+	//PowerUpBoxPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( PowerUpBoxPtr );
 
 
- 	FlyingPuwerUp *flyingPuwerUpPtr; // FlyingPuwerUp -----------------------------------------------
+	//FlyingPuwerUp *flyingPuwerUpPtr; // FlyingPuwerUp -----------------------------------------------
 
-	flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(250,50), BULLET_R);
-	flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( flyingPuwerUpPtr );
+	//flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(250,50), BULLET_R);
+	//flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( flyingPuwerUpPtr );
 
-	flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(2425,32), BULLET_R);
-	flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( flyingPuwerUpPtr );
+	//flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(2425,32), BULLET_R);
+	//flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( flyingPuwerUpPtr );
 
-	flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(2425,106), BULLET_LAZER);
-	flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
-	objectListPtr->Add( flyingPuwerUpPtr );
+	//flyingPuwerUpPtr= new FlyingPuwerUp(DOUBLE2(2425,106), BULLET_LAZER);
+	//flyingPuwerUpPtr->SetPlayerPtr( m_PlayerPtr );
+	//objectListPtr->Add( flyingPuwerUpPtr );
 
- 	Box *boxPtr; // BOXES ---------------------------------------------------------------------
+	Box *boxPtr; // BOXES ---------------------------------------------------------------------
 
 	boxPtr= new Box(DOUBLE2(1250,140));
 	boxPtr->SetPlayerPtr( m_PlayerPtr );
@@ -403,11 +394,7 @@ void Contra::PlaceEnemys(ObjectList * objectListPtr){
 
 
 
- 	EvilTurret * evilTurretPtr; // EVIL TURRETS ------------------------------------------------
-
-	/*evilTurretPtr= new EvilTurret(DOUBLE2(240,88)); // DEBUG
-	evilTurretPtr->SetPlayerPtr( m_RandPlayer );
-	objectListPtr->Add( evilTurretPtr );*/
+	EvilTurret * evilTurretPtr; // EVIL TURRETS ------------------------------------------------
 
 	evilTurretPtr= new EvilTurret(DOUBLE2(2060,144));
 	evilTurretPtr->SetPlayerPtr( m_PlayerPtr );
@@ -443,12 +430,9 @@ void Contra::PlaceEnemys(ObjectList * objectListPtr){
 	objectListPtr->Add( enemySniperPtr );
 
 
-	// VARIA ---------------------------------------------------------------------------
-	/*PowerUp *objectPtr= new PowerUp(DOUBLE2(150,10), -1);
-	objectPtr->SetPlayerPtr(m_RandPlayer);
-	objectListPtr->Add( objectPtr );*/
+    //--------------------------------------------------------------------------------
 
- 	EnemyWalking *EnemyPtr= new EnemyWalking(DOUBLE2(250,10));
+	EnemyWalking *EnemyPtr= new EnemyWalking(DOUBLE2(250,10));
 	EnemyPtr->SetPlayerPtr(m_PlayerPtr);
 	objectListPtr->Add( EnemyPtr );
 
@@ -466,20 +450,21 @@ void Contra::PlaceEnemys(ObjectList * objectListPtr){
 
 
 
-	BosSniper *bosSniperPtr; // BOSJESSNIPERS---------------------
+	//BosSniper *bosSniperPtr; // BOSJESSNIPERS---------------------
 
-	bosSniperPtr= new BosSniper(DOUBLE2(1360,80));
-	bosSniperPtr->SetPlayerPtr(m_PlayerPtr);
-	objectListPtr->Add( bosSniperPtr );
+	//bosSniperPtr= new BosSniper(DOUBLE2(1360,80));
+	//bosSniperPtr->SetPlayerPtr(m_PlayerPtr);
+	//objectListPtr->Add( bosSniperPtr );
 
-	bosSniperPtr= new BosSniper(DOUBLE2(1555,55));
-	bosSniperPtr->SetPlayerPtr(m_PlayerPtr);
-	objectListPtr->Add( bosSniperPtr );
+	//bosSniperPtr= new BosSniper(DOUBLE2(1555,55));
+	//bosSniperPtr->SetPlayerPtr(m_PlayerPtr);
+	//objectListPtr->Add( bosSniperPtr );
 	
 
-	m_PersonageNum = objectListPtr->Add( m_PlayerPtr ); // Nu pas de player erin gooien, dan drawt hij  van boven
+	m_PersonageNum= objectListPtr->Add( m_PlayerPtr ); // Nu pas de player erin gooien, dan drawt hij  van boven
 
-	EndBoss *endBossPtr= new EndBoss( DOUBLE2(m_LevelMax.x, 0) );
-	//endBossPtr->SetPlayerPtr(m_RandPlayer);
-	objectListPtr->Add( endBossPtr );
+	//EndBoss *endBossPtr= new EndBoss( DOUBLE2(m_LevelMax.x, 0) );
+	////endBossPtr->SetPlayerPtr(m_PlayerPtr);
+	//objectListPtr->Add( endBossPtr );
 }
+	

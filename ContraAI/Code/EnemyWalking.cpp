@@ -3,7 +3,6 @@
 //---------------------------
 #include "EnemyWalking.h"
 #include "Explosion.h"
-#include "GameScore.h"
 
 //---------------------------
 // Defines
@@ -44,28 +43,23 @@ void EnemyWalking::CollideWith( ObjectBase *colliderptr, int otherType){
 		if( otherType==TYPE_PLAYER_BULLET )
 			m_ObjectListPtr->Delete(colliderptr); // delete the bullet
 		if( otherType==TYPE_PLAYER_BULLET ){ // || otherType==TYPE_PLAYER 
-			gamescore.updateScore(100);
 			StartToDie();
 		}
 	}
-	
 }
 
 
 void EnemyWalking::SetPlayerPtr(ObjectBase *playerPtr){
 		m_PlayerPtr= playerPtr;
-		
-
-		
+		m_PointingDir= m_PlayerPtr->GetPos() - m_Pos;
+		if( m_PointingDir.x>0 ){
+			m_PointingDir.x= 1;
+		}else m_PointingDir.x= -1;
+		m_Velocity.x= 100 * m_PointingDir.x;
 	}
 
 void EnemyWalking::Tick(double deltaTime )
 {
-	m_PointingDir= m_PlayerPtr->GetPos() - m_Pos;
-	if( m_PointingDir.x>0 ){
-		m_PointingDir.x= 1;
-	}else m_PointingDir.x= -1;
-	m_Velocity.x= 100 * m_PointingDir.x;
 	if (m_State==STATE_DIE){
 
 		m_Pos+= m_Velocity*deltaTime;
@@ -144,6 +138,7 @@ void EnemyWalking::Paint()
 }
 
 void EnemyWalking::StartToDie(){
+    gamescore.updateScore(100);
 	m_State= STATE_DIE;
 			m_AnimationTick= 5;
 			m_TimeToDie= 30;

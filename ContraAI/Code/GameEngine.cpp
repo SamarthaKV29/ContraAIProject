@@ -214,7 +214,6 @@ bool GameEngine::Run(HINSTANCE hInstance, int iCmdShow)
 	// Call GamePaint()
 	Repaint();
 
-
 	// Attach the keyboard thread to the main thread. This gives the keyboard events access to the window state
 	// In plain English: this allows a KeyPressed() event to hide the cursor of the window. 
 	AttachThreadInput(m_dKeybThreadID, GetCurrentThreadId(), true);
@@ -424,6 +423,7 @@ bool GameEngine::IsKeyDown(int vKey)
 	if (GetAsyncKeyState(vKey) < 0) return true;
 	else return false;
 }
+
 
 void GameEngine::SetKeyList(String const& keyListRef)
 {
@@ -2038,6 +2038,13 @@ void CALLBACK Timer::TimerProcStatic(void* lpParameter, BOOLEAN TimerOrWaitFired
 // String methods
 //-----------------------------------------------------------------
 
+
+void OutputDebugString(double x){
+    ostringstream ss;
+    ss << x;
+    OutputDebugString(ss.str().c_str());
+}
+
 String::String(wchar_t const* wideTextPtr) : m_Precision(-1)
 {		
 	m_Length = (int) wcslen(wideTextPtr) + 1; // include room for null terminator
@@ -2332,17 +2339,6 @@ int String::IndexOf(TCHAR character) const
 	else return -1;
 }
 
-int String::NextIndexOf(TCHAR character, int start, int end) const
-{
-	if (start >= end) return -1;
-	int index = start;
-
-	while (m_TextPtr[index] != character && m_TextPtr[index] != TEXT('\0')) ++index;
-
-	if (m_TextPtr[index] == character) return index;
-	else return -1;
-}
-
 int String::LastIndexOf(TCHAR character) const
 {
 	int index = this->GetLength() - 1;
@@ -2412,11 +2408,6 @@ double String::ToDouble() const
 
 TCHAR* String::ToTChar() const
 {
-	return m_TextPtr;
-}
-
-string String::ToStdString() const{
-
 	return m_TextPtr;
 }
 
@@ -4448,19 +4439,24 @@ RECT2 RECT2::operator+(DOUBLE2 other){
 	tmpRect.bottom= bottom+other.y;
 	return tmpRect;
 }
+bool RECT2::isFilled(){
+    if(top || left || right || bottom)
+        return true;
+    return false;
+}
 
 
 
 //-----------------------------------------------------------------
 // DOUBLE2 Constructors, friend operators, operators, general methods
 //-----------------------------------------------------------------
-DOUBLE2::DOUBLE2() : x(0), y(0) 
+DOUBLE2::DOUBLE2() : x(0), y(0), isSet(false) 
 {}
 
-DOUBLE2::DOUBLE2(double x, double y) : x(x), y(y) 
+DOUBLE2::DOUBLE2(double x, double y) : x(x), y(y), isSet(true) 
 {}
 
-DOUBLE2::DOUBLE2(const D2D1_POINT_2F& d2dPoint) : x(d2dPoint.x), y(d2dPoint.y)
+DOUBLE2::DOUBLE2(const D2D1_POINT_2F& d2dPoint) : x(d2dPoint.x), y(d2dPoint.y), isSet(true)
 {}
 
 DOUBLE2 operator*(double factor, DOUBLE2 right)
@@ -4532,6 +4528,10 @@ DOUBLE2 DOUBLE2::operator*(double factor)
 DOUBLE2 DOUBLE2::operator/(double divisor)
 {
 	return DOUBLE2(x / divisor, y / divisor); 
+}
+DOUBLE2 DOUBLE2::operator/(DOUBLE2 divisor)
+{
+	return DOUBLE2(x / divisor.x, y / divisor.y); 
 }
 
 void DOUBLE2::operator+=(DOUBLE2 other)
@@ -4623,6 +4623,43 @@ DOUBLE2 DOUBLE2::Normalized(double epsilon)
 DOUBLE2 DOUBLE2::Orthogonal()
 { 
 	return DOUBLE2(-y, x);
+}
+
+bool DOUBLE2::isSet_(){
+    if(x == 0 && y == 0){
+        isSet = false;
+        return isSet;
+    }
+    return isSet;
+}
+
+
+
+
+DOUBLE2 DOUBLE2::minHDist(DOUBLE2 m){
+	DOUBLE2 res;
+	res.x = min(x, m.x);
+	if(res.x == x)
+		res.y = y;
+	else
+		res.y = m.y;
+	return res;
+}
+DOUBLE2 DOUBLE2::minVDist(DOUBLE2 m){
+	DOUBLE2 res;
+	res.y = min(y, m.y);
+	if(res.y == y)
+		res.x = x;
+	else
+		res.x = m.x;
+	return res;
+}
+
+
+bool DOUBLE2::isNearby(DOUBLE2 other){
+    if((*this - other).Length() < 150)
+        return true;
+    return false;
 }
 
 

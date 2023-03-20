@@ -8,11 +8,6 @@
 #include "Bridge.h"
 #include "GameScore.h"
 #include <time.h>
-#include "Player.h"
-
-
-
-
 //-----------------------------------------------------
 // RandomAgent Class									
 //-----------------------------------------------------
@@ -37,7 +32,7 @@ public:
 	void SetPowerup( int bulletType ) { 
 		if( bulletType != BULLET_R )m_BulletType= bulletType; 
 		if( bulletType == -1 ) DebugBreak();
-	}
+	} 
 	virtual DOUBLE2 GetPos(){ return m_CenterPos; }
 	void SetEnemyWalkingPtr(ObjectBase *enemy);
 	void AddLevelHitRegion( HitRegion *levelHit ){

@@ -5,8 +5,7 @@
 //-----------------------------------------------------
 #include "GameEngine.h"
 #include "ObjectBaseList.h"
-#include "Player.h"
-#include "RandomAgent.h"
+#include "AIAgentPlayer.h"
 
 //-----------------------------------------------------
 // Box Class									
@@ -23,8 +22,8 @@ public:
 	virtual void Tick(double deltaTime );
 	virtual void Paint();
 	virtual void CollideWith( ObjectBase *colliderptr, int otherType);
-	void SetPlayerPtr(Player *playerPtr){m_PlayerPtr= playerPtr;}
-	void SetPlayerPtr(RandomAgent *randPlayer){m_RandPlayer = randPlayer;}
+	void SetPlayerPtr(AIAgentPlayer *playerPtr){m_PlayerPtr= playerPtr;}
+
 private: 
 	//-------------------------------------------------
 	// Datamembers								
@@ -39,8 +38,7 @@ private:
 	static Bitmap *m_BmpSpritePtr;
 
 	double m_AnimationTik;
-	Player *m_PlayerPtr;
-	RandomAgent *m_RandPlayer;
+	AIAgentPlayer *m_PlayerPtr;
 	double m_DirRadians;
 	DOUBLE2 m_PointingDir;
 	double m_ShootCounter;

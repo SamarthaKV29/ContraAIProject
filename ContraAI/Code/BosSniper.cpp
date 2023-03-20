@@ -50,7 +50,7 @@ void BosSniper::CollideWith( ObjectBase *colliderptr, int otherType)
 		if( m_ShootSwitch ){
 			// doodgaan! XD
 			m_ObjectListPtr->Delete(this);
-			return;
+            
 		}
 		break;
 	}//*/

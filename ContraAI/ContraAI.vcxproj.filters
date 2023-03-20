@@ -69,7 +69,7 @@
     <ClCompile Include="Code\util.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="Code\RandomAgent.cpp">
+    <ClCompile Include="Code\AIAgentPlayer.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,7 +134,7 @@
     <ClInclude Include="Code\util.h">
       <Filter>Code</Filter>
     </ClInclude>
-    <ClInclude Include="Code\RandomAgent.h">
+    <ClInclude Include="Code\AIAgentPlayer.h">
       <Filter>Code</Filter>
     </ClInclude>
   </ItemGroup>

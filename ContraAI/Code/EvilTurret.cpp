@@ -4,7 +4,6 @@
 #include "EvilTurret.h"
 #include "Explosion.h"
 #include "Bullet.h"
-#include "GameScore.h"
 
 //---------------------------
 // Defines
@@ -48,7 +47,6 @@ void EvilTurret::CollideWith( ObjectBase *colliderptr, int otherType)
 {
 	if( otherType == TYPE_PLAYER_BULLET ){
 		--m_Lives;
-		gamescore.updateScore(100);
 		m_ObjectListPtr->Delete( colliderptr );
 		if( m_Lives <= 0 ){
 			m_ObjectListPtr->Delete( this ); // suicide

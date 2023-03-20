@@ -3,15 +3,9 @@
 GameScore gamescore;
 
 String GameScore::scoreAsText(){
-		ostringstream oOStrStream;
-		oOStrStream << score;
-		string res = oOStrStream.str();
-		String res_ = "";
-		for(int i = 0; i < res.length(); i++){
-			String t = String(res.at(i));
-			res_ += t;
-		}	
-		return res_;
+		ostringstream strscor;
+		strscor << score;
+        return strscor.str().c_str();
 	}
 
 int GameScore::getScore(){

@@ -13,7 +13,7 @@ public:
 	bool isEmpty();
 };
 
-int manhattanDist(DOUBLE2 p1, DOUBLE2 p2);
+double manhattanDist(DOUBLE2 p1, DOUBLE2 p2);
 
 class Direction{
 public:

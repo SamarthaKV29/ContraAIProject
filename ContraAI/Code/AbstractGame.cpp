@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------
 // Include Files
 //-----------------------------------------------------------------
-#include "../resource.h"	// include file to use resources
+#include "../Resource.h"	// include file to use resources
 #include "GameEngine.h" // include file to use the game engine
 #include "AbstractGame.h"
 

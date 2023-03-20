@@ -4,7 +4,7 @@
 #include "EnemySniper.h"
 #include "Explosion.h"
 #include "Bullet.h"
-#include "GameScore.h"
+
 //---------------------------
 // Defines
 //---------------------------
@@ -17,7 +17,7 @@ Bitmap * EnemySniper::m_BmpSpritePtr= 0;
 EnemySniper::EnemySniper(DOUBLE2 pos): ObjectBase(pos), m_PlayerPtr(0), m_State(STATE_NORMAL), 
 	m_AnimationFrame(0), m_TimeToDie(0.1), m_bulletsToShoot(0), m_ShootCounter(0)
 {
-	m_Type= TYPE_ENEMY;
+	m_Type = TYPE_ENEMY;
 
 	int gs= 32; //GridSize
 	m_Pos.x= ((int)m_Pos.x/gs+0.5)*gs;
@@ -55,19 +55,26 @@ void EnemySniper::Tick(double deltaTime ){
 
 		
 		//DOUBLE2 schetmLingsBoven=  (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() );
-		DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) );
+		DOUBLE2 screenBottomRight= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) );
 
-		if( m_Pos.x> schetmRechtsOnder.x-16 ) return;
+		if( m_Pos.x> screenBottomRight.x-16 ) return;
 
-		double newMax= 2*M_PI/12; // Kartelig laten bewegen
+		double newMax= 2*M_PI/12; // move jagged
 		double tussenWaarde= -m_PointingDir.AngleWith(DOUBLE2(1,0));
 		tussenWaarde /= newMax;
-		double naKomma= tussenWaarde- (int)tussenWaarde;
+		double naKomma = tussenWaarde- (int)tussenWaarde;
 		tussenWaarde= (int)tussenWaarde;
 		if( naKomma>0.5 ) ++tussenWaarde;
 		m_DirRadians= tussenWaarde *newMax;
-
-		m_Pos= m_Pos;
+		
+		//Double Newmax = 2 * M_PI / 12; // Move jagged
+		//double between value = -m_PointingDir.AngleWith (Double2 (1.0));
+		//between value / = Newmax;
+		//double after Comma between Value = (int) between value;
+		//intermediate value = (int) intermediate value;
+		//if (naKomma> 0.5) between value ++;
+		//m_DirRadians = between value * Newmax;
+				//m_Pos= m_Pos;
 
 		++m_ShootCounter;
 		if( m_ShootCounter>20 ){
@@ -87,11 +94,12 @@ void EnemySniper::Tick(double deltaTime ){
 		}
 
 	}else{ //STATE_DIE
-
+        
 		m_Pos+= DOUBLE2(100 * -Sign(m_PointingDir.x), -110)*deltaTime;
 
 		m_TimeToDie-= deltaTime;
 		if( m_TimeToDie<=0 ){
+            gamescore.updateScore(100);
 			m_ObjectListPtr->Delete(this);
 		}
 
@@ -165,9 +173,7 @@ void EnemySniper::Paint()
 void EnemySniper::CollideWith( ObjectBase *colliderptr, int otherType){
 	if( m_State!=STATE_DIE)
 	if( otherType==TYPE_PLAYER_BULLET ){
-		gamescore.updateScore(200);
 		m_State= STATE_DIE;
 		m_ObjectListPtr->Delete(colliderptr); // delete the bullet
 	}
-	
 }

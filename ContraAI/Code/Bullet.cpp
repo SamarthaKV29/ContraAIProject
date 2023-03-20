@@ -37,7 +37,7 @@ Bullet::~Bullet() {} // dont delete m_BmpSpritePtr;, it wille automaticaly be de
 
 void Bullet::Tick(double deltaTime)
 {
-	m_Pos+= m_Velocity * 1.2 * deltaTime;
+	m_Pos+=m_Velocity* deltaTime;
 	m_HitRegionPtr->SetPos(m_Pos);
 
 
@@ -74,8 +74,8 @@ void Bullet::Tick(double deltaTime)
 		return;
 	}*/
 	
-	DOUBLE2 schetmLingsBoven=  (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() ); //Screen TOP left
-	DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) ); //Screen Bottom right
+	DOUBLE2 schetmLingsBoven=  (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() );
+	DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) );
 
 	if( m_Pos.x>schetmRechtsOnder.x+10 ){
 		m_ObjectListPtr->Delete(this);

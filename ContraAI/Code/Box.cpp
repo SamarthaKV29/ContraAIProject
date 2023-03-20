@@ -56,14 +56,14 @@ void Box::CollideWith( ObjectBase *colliderptr, int otherType){ // als dit word 
 
 			m_ObjectListPtr->Delete(this);
 		}
+        
 	}
 }
 
 void Box::Tick(double deltaTime )
 {
-	m_PointingDir= (m_PlayerPtr->GetPos() - m_Pos).Normalized();
 	m_AnimationTik+=6*deltaTime;
-	
+	m_PointingDir= (m_PlayerPtr->GetPos() -m_Pos).Normalized();
 
 	DOUBLE2 schetmLingsBoven=  (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() );
 	DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) );

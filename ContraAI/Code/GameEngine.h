@@ -18,7 +18,6 @@
 //#define _WIN32_WINNT 0x0601 // Windows 7
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <ShellAPI.h>
 #include <stdlib.h>
 #include <tchar.h>
 #include <Mmsystem.h>	// winmm.lib header, used for playing sound
@@ -42,7 +41,6 @@ using namespace std;
 
 #define _USE_MATH_DEFINES // Define M_PI and other constants
 #include "math.h"
-
 using namespace D2D1;
 
 //Unicode defs
@@ -120,6 +118,7 @@ struct DOUBLE2
 	DOUBLE2			operator+ ();									// Identity:											DOUBLE2 w = +v;
 	DOUBLE2			operator* (double factor);						// Right multiplication with a double:					DOUBLE2 w = v * 2;
 	DOUBLE2			operator/ (double divisor);						// Division by double:									DOUBLE2 w = v/2;
+	DOUBLE2			operator/ (DOUBLE2 divisor);
 	void			operator+=(DOUBLE2 other);						// Translate this point inplace:						p += v;
     void			operator-=(DOUBLE2 other);						// Translate this point inplace (opposite direction):	p -= v;
 	void			operator*=(double factor);						// Scale vector inplace:								v *= s;
@@ -140,11 +139,15 @@ struct DOUBLE2
 	double			AngleWith(DOUBLE2 other);						// AngleWidth another vector:							double d = u.AngleWith(v);
 	DOUBLE2			Normalized(double epsilon = 0.001);				// Normalized form of a vector:							DOUBLE2 u = v.Normalized();
 	DOUBLE2			Orthogonal();									// Orthogonal:											DOUBLE2 w = v.Orthogonal();
-	
+    bool            isSet_();
+	DOUBLE2         minHDist(DOUBLE2 m);
+	DOUBLE2			minVDist(DOUBLE2 m);
+    bool            isNearby(DOUBLE2 other);
 	// -------------------------
 	// Datamembers 
 	// -------------------------
     double x, y;
+    bool isSet;
 };
 
 
@@ -161,7 +164,7 @@ struct RECT2
 	
 
 	RECT2 RECT2::operator+(DOUBLE2 other);
-
+    bool RECT2::isFilled();
 	// -------------------------
 	// Datamembers 
 	// -------------------------	
@@ -448,13 +451,13 @@ public:
 	String(const String& sRef);
 	String(wchar_t character);
 	String(char character);
+
 	virtual ~String();
 
 	// -------------------------
 	// General String Methods
 	// -------------------------	
 	TCHAR CharAt(int index) const;
-	
 	String Replace(TCHAR oldChar, TCHAR newChar) const;
 	String SubString(int index) const;
 	String SubString(int index, int length) const;
@@ -462,21 +465,20 @@ public:
 	String ToUpperCase() const;
 	String Trim() const;
 	int IndexOf(TCHAR character) const;
-	int NextIndexOf(TCHAR character, int start, int end) const;
 	int LastIndexOf(TCHAR character) const;
 	bool StartsWith(const String& sRef) const;
 	bool EndsWith(const String& sRef) const;
 	int GetLength() const;
 	bool Equals(const String& sRef) const;
 	String& SetPrecision(int precision);
-
+    
 	// -------------------------
 	// Conversion Methods
 	// -------------------------	
 	TCHAR* ToTChar() const;
 	int ToInteger() const;
 	double ToDouble() const;
-	string ToStdString() const;
+
 	// ----------------------------------------
 	// Overloaded operators: = , +=, +, and ==
 	// ----------------------------------------
@@ -816,7 +818,7 @@ private:
 // Extra OutputDebugString functions
 //-----------------------------------------------------------------
 void OutputDebugString(String const& textRef);
-
+void OutputDebugString(double x);
 //-----------------------------------------------------------------
 // Windows Procedure Declarations
 //-----------------------------------------------------------------

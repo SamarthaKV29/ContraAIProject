@@ -1,7 +1,7 @@
 //---------------------------
 // Includes
 //---------------------------
-#include "Player.h"
+#include "AIAgentPlayer.h"
 #include "Bullet.h"
 
 //---------------------------
@@ -12,25 +12,25 @@
 //---------------------------
 // Constructor & Destructor
 //---------------------------
-Bitmap * Player::m_BmpSpritePtr= 0;
-//int Player::m_SpriteWidth=0;
-//int Player::m_SpriteHeight=0;
+Bitmap * AIAgentPlayer::m_BmpSpritePtr= 0;
+//int AIAgentPlayer::m_SpriteWidth=0;
+//int AIAgentPlayer::m_SpriteHeight=0;
 
-Player::Player(int x, int y):ObjectBase(DOUBLE2(x, y))
+AIAgentPlayer::AIAgentPlayer(int x, int y):ObjectBase(DOUBLE2(x, y))
 	, m_ObjectListPtr(0), m_ShootCounter(0), m_PointingDir()
 	, m_Colide(true), m_CenterPos(), m_Lives(5), m_BulletDir()
-	, m_JumpRotation(0), m_InvincebleTimer(3), m_AutomaticFinalRun(0)
+	, m_JumpRotation(0), m_InvincebleTimer(1), m_AutomaticFinalRun(0)
 {
 	m_Type= TYPE_PLAYER;
-	m_BulletType= BULLET_NORMAL;
-
-
+    m_BulletType= BULLET_LAZER;
+	m_cnt = 0;
+    gamescore.setScore(0);
 	m_PointingDir.x= 1;
 	m_PointingDir.y= 0;
 	m_OnGround= false;
 
 	if( m_BmpSpritePtr==0 ){ // Load the bitmap:
-		m_BmpSpritePtr= new Bitmap("./resources/Player.png");
+		m_BmpSpritePtr= new Bitmap("./resources/AIAgent.png");
 		m_BmpSpritePtr->SetTransparencyColor(0,128,0);
 		// Check heeft geen nut:
 		//if (!m_BmpSpritePtr->Exists()) GAME_ENGINE->MessageBox("bitmap Fail! >:D");
@@ -62,8 +62,18 @@ Player::Player(int x, int y):ObjectBase(DOUBLE2(x, y))
 
 
 }
+String AIAgentPlayer::GetEnemyDetails(){
+	if(currEnemy.x == 0){
+		return String("Target:None");
+	}
+	else{
+		String m = "Target:";
+		m = m + currEnemy.ToString();
+		return String(m);
+	}
 
-Player::~Player()
+}
+AIAgentPlayer::~AIAgentPlayer()
 {
 	delete m_HitBBoxV ;
 	//delete m_HitBBoxH ;
@@ -85,52 +95,53 @@ Player::~Player()
 
 
 
-void Player::CollideWith( ObjectBase *colliderptr, int otherType){ // als dit word gecaled, dan is er al een collition
+void AIAgentPlayer::CollideWith( ObjectBase *colliderptr, int otherType){ // as it is called, there's been a collision
 	switch( otherType ){
 	case TYPE_ENEMY_BULLET:
+        
 		StartToDie();
-		OutputDebugString(" (By ENEMY_BULLET)");
+
 		m_ObjectListPtr->Delete(colliderptr); // delete the bullet
 		break;
 
 	case TYPE_ENEMY_WALKING:
+        
 		StartToDie();
-		OutputDebugString(" (By ENEMY_WALKING)");
+		//OutputDebugString(" (By ENEMY_WALKING)");
 		break;
 
 
 	case TYPE_POWERUP:
-		OutputDebugString("\nPOWERUP!! ^^");
+		//OutputDebugString("\nPOWERUP!! ^^");
+        gamescore.updateScore(100);
 		break;
 	}
 }
 
 
-void Player::StartToDie(){ // simpel maar praktis
-	OutputDebugString("\nAauw, Player Hitted!");
+void AIAgentPlayer::StartToDie(){ // simpel maar praktis
+    
 	if( m_InvincebleTimer<=0 ){
 		if( m_State != STATE_DIE ){
 			m_State= STATE_DIE;
 			m_TimeToDie= 1; // sec.
 			m_Velocity.x= -m_PointingDir.x*20;
 			m_Velocity.y= -200;
-		}else{
-			OutputDebugString(", But he is already dead");
 		}
-	}else{
-		OutputDebugString(", But he is invinsible =D");
 	}
 }
 
 
-void Player::DieAndRespawn(){
+void AIAgentPlayer::DieAndRespawn(){
+    OutputDebugString(m_Pos.ToString());
+    gamescore.updateScore(-100);
 	m_State= STATE_NORMAL;
 	m_BulletType= BULLET_NORMAL;
 	m_TimeToDie=30;
 	m_Velocity= DOUBLE2();
 	
 	if( m_Lives<=0 ){
-		GAME_ENGINE->MessageBox("GAME OVER!!");
+		GAME_ENGINE->MessageBox(String("GAME OVER! Your score is ") + gamescore.scoreAsText());
 		GAME_ENGINE->QuitGame();
 	}
 
@@ -143,9 +154,82 @@ void Player::DieAndRespawn(){
 
 }
 
+vector<ObjectBase *> enemies;
 
-void Player::Tick(double deltaTime)
+void AIAgentPlayer::Seek_(){
+    double oldVelY = m_Velocity.y;
+    ObjectBase * curr;
+    
+    for(int i =0; i< m_ObjectListPtr->getObjectCount()-1; i++){
+        if(m_ObjectListPtr->CheckIfPlaatsExist(i)){
+            //setBoolsFalse();
+            if(m_ObjectListPtr->GetPointer(i)->GetType() == TYPE_BRIDGE && m_ObjectListPtr->GetPointer(i)->GetHitRegion()->HitTest(m_HitBBoxV)){
+                    Jump(300);
+                    M_JUMPING = true;
+            }
+            if(m_ObjectListPtr->GetPointer(i)->GetType() == TYPE_ENEMY_WALKING || m_ObjectListPtr->GetPointer(i)->GetType() == TYPE_ENEMY || m_ObjectListPtr->GetPointer(i)->GetType() == TYPE_ENEMY_BOX){
+                enemies.push_back(m_ObjectListPtr->GetPointer(i));
+
+            }
+        }
+    }//end for
+    curr = enemies.at(0);
+    for(unsigned int i=1; i<enemies.size(); i++){
+        if(((curr->GetPos().Orthogonal() - m_Pos.Orthogonal()).Orthogonal()).Normalized().x < ((enemies.at(i)->GetPos().Orthogonal() - m_Pos.Orthogonal()).Orthogonal()).Normalized().x)
+            curr = enemies.at(i);
+    }
+    currEnemy = curr->GetPos();
+
+    setBoolsFalse();
+    if((currEnemy.x - m_Pos.x) > 0){
+        M_MOVINGRIGHT = true;
+    }
+    else if((m_Pos.x - currEnemy.x) < 0){
+        M_MOVINGLEFT = true;
+    }
+    else if(m_Pos == m_Pos){
+        M_MOVINGLEFT = M_MOVINGRIGHT = false;
+        if(rand()%40 == 0){
+            M_MOVINGLEFT = true;
+            Jump(300);
+        }
+        else if(rand()%60 == 20){
+            M_MOVINGRIGHT = true;
+            M_JUMPING = true;
+            Jump(-300);
+        }
+    }
+    else{
+        M_MOVINGLEFT = M_MOVINGRIGHT = false;
+    }
+    
+    if(((curr->GetPos().Orthogonal() - m_Pos.Orthogonal()).Orthogonal()).Normalized().y < -0.50){
+        M_LOOKINGDOWN = true;
+    }
+    else if(((curr->GetPos().Orthogonal() - m_Pos.Orthogonal()).Orthogonal()).Normalized().y > 0.50){
+        M_LOOKINGUP = true;
+    }
+    else{
+        M_LOOKINGDOWN = M_LOOKINGUP = false;
+    }
+    if(m_Pos.isNearby(currEnemy)){
+        Shoot();
+        enemies.clear();
+    }
+    if(m_Pos.x > 1900 && m_Pos.x < 2500)
+        Jump(300);
+    
+}
+
+
+void AIAgentPlayer::Tick(double deltaTime)
 {
+    if(m_PointingDir.x > 0 && (rand()%61 == 60)){
+        gamescore.updateScore(1);
+    }
+    else if(m_PointingDir.x < 0 && (rand()%61 == 60)){
+        gamescore.updateScore(-1);
+    }
 	if( m_InvincebleTimer>0 )
 		m_InvincebleTimer-= deltaTime;
 
@@ -169,28 +253,31 @@ void Player::Tick(double deltaTime)
 		}
 	}
 
+    if(GAME_ENGINE->IsKeyDown('D')){
+        m_BulletType = BULLET_LAZER;
+    }
 
 
-
-	// Binnen de harde grenzen blijven: ----------------------------------------------
+	// remain within the hard limits: ----------------------------------------------
 	m_Pos.x= min(m_LevelMax.x , max(0, m_Pos.x) );
 	m_Pos.y= min(m_LevelMax.y+60, max(0, m_Pos.y) );
-	if( m_Pos.x>=m_LevelMax.x )
-		GAME_ENGINE->QuitGame(); // gedaan!
-
-	if( m_Pos.y>m_LevelMax.y+30 && m_Pos.x > m_LevelMax.x/2+100 ){ // kliff
+	if( m_Pos.x>=m_LevelMax.x ){
+		GAME_ENGINE->QuitGame(); // done!
+		GAME_ENGINE->MessageBox(String("Your score is ") + gamescore.scoreAsText());
+	}
+	if( m_Pos.y>m_LevelMax.y+30 && m_Pos.x > m_LevelMax.x/2+100 ){ // cliff
 		m_InvincebleTimer=0;
 		DieAndRespawn();
 	}
 
 
-	// Dood? Stop dan hier! ----------------------------------------------------------- Dood? Stop dan hier! ----
+	// Death? Stop here!----------------------------------------------------------- Dood? Stop dan hier! ----
 	if( m_State == STATE_DIE ){
 		m_TimeToDie-=deltaTime;
 		if( m_TimeToDie<=0 ){
 			DieAndRespawn();
 		}
-		return; // Als hij dood aan het gaan is, dan stopt de code hier
+		return; //When he died on the go, then the code stops here
 	}
 
 
@@ -199,13 +286,13 @@ void Player::Tick(double deltaTime)
 
 	}*/
 
-	// ROUWE RICHTING BEPALEN -------------------------------------------------
+	// RAW DETERMINE DIRECTION -------------------------------------------------
 	m_PointingDir.y=0;
-	if (GAME_ENGINE->IsKeyDown(VK_RIGHT )) { m_PointingDir.x= 1; }
-	if (GAME_ENGINE->IsKeyDown( VK_LEFT )) { m_PointingDir.x=-1; }
-	if (GAME_ENGINE->IsKeyDown( VK_DOWN )) { m_PointingDir.y= 1; }
-	if (GAME_ENGINE->IsKeyDown( VK_UP )) { m_PointingDir.y=-1; }
-
+	if (M_MOVINGRIGHT) { m_PointingDir.x= 1; }
+	if (M_MOVINGLEFT) { m_PointingDir.x=-1; }
+	if (M_LOOKINGDOWN) { m_PointingDir.y= 1; }
+	if (M_LOOKINGUP) { m_PointingDir.y=-1; }
+    
 
 
 	CalculateStateAndFrame(); /// -----------------------------------------------
@@ -222,32 +309,31 @@ void Player::Tick(double deltaTime)
 
 
 	// JUMPEN -------------------------
-	if (GAME_ENGINE->IsKeyDown('X') && !GAME_ENGINE->IsKeyDown(VK_DOWN)){ Jump(300); }
+	if (M_JUMPING && !M_LOOKINGDOWN){ Jump(300); }
 
 	if( m_OnGround ){ // BEWEGEN -----------------------------
 
-		if( ( GAME_ENGINE->IsKeyDown(VK_RIGHT) || m_AutomaticFinalRun ) || GAME_ENGINE->IsKeyDown(VK_LEFT ) ){ // gewone lings en rechtes
-			//if( !GAME_ENGINE->IsKeyDown(VK_DOWN) ){
+		if( M_MOVINGRIGHT || M_MOVINGLEFT ){ //regular left and right
+			
 			m_Velocity.x= WALKSPEED * m_PointingDir.x;
 			if (GAME_ENGINE->IsKeyDown('G')) m_Velocity.x*= 4; // GodMode
 			m_LegsFrame+=10*deltaTime;
-			//}
 		}
 
-	}else{ // springend bewgen
-		if ( ( GAME_ENGINE->IsKeyDown(VK_RIGHT) || m_AutomaticFinalRun ) || GAME_ENGINE->IsKeyDown(VK_LEFT ) )
+	}else{ // move saucer
+		if (  M_MOVINGRIGHT || M_MOVINGLEFT )
 			m_Velocity.x= WALKSPEED*0.8 * m_PointingDir.x;
 	}
 
 
-	if( m_Colide== false ){ // hij is door een platform aan het vallen
+	if( m_Colide== false ){ //He is a platform to attack
 		int clolliding= false;
 		for( unsigned int i=0; i<m_LevelHitRegions.size(); ++i){
-			if( m_HitBBoxV->HitTest(m_LevelHitRegions.at(0)) ) // niet bukken op de brug...
+			if( m_HitBBoxV->HitTest(m_LevelHitRegions.at(0)) ) // not bend on the bridge
 				clolliding= true;
 		}
 		if( !clolliding ){
-			m_Colide= true; // just er door gevallen
+			m_Colide= true; // just there by fallen
 		}
 		if( GAME_ENGINE->IsKeyDown('H') ) m_Colide= true; // DEBUG
 	}
@@ -258,26 +344,81 @@ void Player::Tick(double deltaTime)
 
 	if( !GAME_ENGINE->IsKeyDown('G') ){ // GOD MODE
 		DOUBLE2 schetmLingsBoven= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() );
-		m_Pos.x= max(schetmLingsBoven.x, m_Pos.x); // niet meer naar lings kunnen.
+		m_Pos.x= max(schetmLingsBoven.x, m_Pos.x); // no longer left.
 	}
 
 
 	CalculateBulletSpawn();
 
 
-	// SCHIETEN --------------------------------------------------------------
+	// SHOOT --------------------------------------------------------------
 	m_ShootCounter+= deltaTime; // in secondes
 
-	if( GAME_ENGINE->IsKeyDown('Z') ) Shoot();
+	//if( GAME_ENGINE->IsKeyDown('Z') ) Shoot();
 
 	m_HitRegionPtr->SetPos(m_Pos);
 
+
+	//===========================================================//
+	setBoolsFalse();
+
+    try{
+	if(GAME_ENGINE->IsKeyDown(VK_RIGHT)){
+		M_MOVINGRIGHT = true;
+		M_MOVINGLEFT = false;
+	}
+	else if(GAME_ENGINE->IsKeyDown(VK_LEFT)){
+		M_MOVINGRIGHT = false;
+		M_MOVINGLEFT = true;
+
+    }
+	else{
+		M_MOVINGLEFT = M_MOVINGRIGHT = false;
+	}
+	if(GAME_ENGINE->IsKeyDown(VK_UP)){
+		M_LOOKINGUP = true;
+		M_LOOKINGDOWN = false;
+	}
+	else if(GAME_ENGINE->IsKeyDown(VK_DOWN)){
+		M_LOOKINGDOWN = true;
+		M_LOOKINGUP = false;
+	}
+	if(GAME_ENGINE->IsKeyDown(VK_RIGHT)){
+		M_MOVINGRIGHT = true;
+		M_MOVINGLEFT = false;
+	}
+	else if(GAME_ENGINE->IsKeyDown(VK_LEFT)){
+		M_MOVINGLEFT = true;
+		M_MOVINGRIGHT = false;
+	}
+    if(GAME_ENGINE->IsKeyDown('Z')){
+        Shoot();
+    }
+    if(GAME_ENGINE->IsKeyDown('X')){
+        M_JUMPING = true;
+    }
+    }catch(exception e){
+        OutputDebugString(e.what());
+        m_cnt = 0;
+        setBoolsFalse();
+    }
+    try{
+        
+        //Seek_();
+    }
+    catch(exception e){
+        OutputDebugString(e.what());
+    }
+    for(unsigned int i=0; i < m_LevelHitRegions.size(i); ++i){
+        if(DoCollitions(m_HitBBoxV, 
+    }
 }
 
 
-void Player::Shoot()
+void AIAgentPlayer::Shoot()
 {
-	m_BulletDir = m_PointingDir;
+    if((M_MOVINGLEFT || M_MOVINGRIGHT ) && (M_LOOKINGDOWN || M_LOOKINGUP))
+        m_BulletDir = m_PointingDir;
 	bool canIShoot= false;
 	switch( m_BulletType ){
 
@@ -314,19 +455,27 @@ void Player::Shoot()
 	}
 
 	if( canIShoot ){
-
-		m_ShootCounter=0;
-		Bullet *bulletPtr= new Bullet(m_BulletSpawn, m_BulletDir.Normalized()*500, TYPE_PLAYER_BULLET, m_BulletType);
-		m_ObjectListPtr->Add(bulletPtr);
+    	m_ShootCounter=0;
+		if(!M_SHOOTING){
+			if(++m_cnt > 5) M_SHOOTING = true; //increase slowly
+            Bullet *bulletPtr= new Bullet(m_BulletSpawn, m_BulletDir.Normalized()*350, TYPE_PLAYER_BULLET, m_BulletType);
+			m_ObjectListPtr->Add(bulletPtr);
+		}else if(M_SHOOTING){
+			m_cnt-=2;
+			if(m_cnt < 0) M_SHOOTING = false; //decrease fast
+			Bullet *bulletPtr= new Bullet(m_BulletSpawn, m_BulletDir.Normalized()*350, TYPE_PLAYER_BULLET, m_BulletType);
+			m_ObjectListPtr->Add(bulletPtr);
+		}
 
 	}
+    
 
 }
 
-void Player::CalculateStateAndFrame(){
+void AIAgentPlayer::CalculateStateAndFrame(){
 
 	if( !m_OnGround ){
-		int onderMarge= 8;// Ondaraan in de map (Water/Kliff)
+		int onderMarge= 8; // Bottom of the map (Water / Cliff)
 		double groundDist= m_LevelMax.y - onderMarge- (m_Pos.y);
 		if ( groundDist<0 ){
 			if( m_Pos.x<m_LevelMax.x/2 +100 ){// in het water
@@ -340,9 +489,9 @@ void Player::CalculateStateAndFrame(){
 	}
 
 
-	if( m_OnGround ){ // on the ground (of in het water)
+	if( m_OnGround ){ // on the ground (or in the water)
 
-		if ( ( GAME_ENGINE->IsKeyDown(VK_RIGHT) || m_AutomaticFinalRun ) || GAME_ENGINE->IsKeyDown(VK_LEFT ) )
+		if ( M_MOVINGRIGHT || M_MOVINGLEFT )
 		{
 			if( m_State== STATE_SWIM || m_State== STATE_DIVE )
 			{
@@ -357,11 +506,11 @@ void Player::CalculateStateAndFrame(){
 		else // No left or right
 		{
 			m_LegsFrame= 0;
-			if( GAME_ENGINE->IsKeyDown(VK_DOWN) )
+			if( M_LOOKINGDOWN )
 			{
 				if( m_State == STATE_SWIM ) m_State= STATE_DIVE;
 				if( m_State != STATE_DIVE ) m_State= STATE_CRAWL;
-				if( GAME_ENGINE->IsKeyDown('X') ){ m_Colide= false; } // laten vallen
+                if( M_JUMPING && M_LOOKINGDOWN){ m_Colide= false; } // drop
 			}
 			else
 			{
@@ -375,15 +524,15 @@ void Player::CalculateStateAndFrame(){
 
 		m_BodyFrame= 1; // BodyFrame Bepalen ---------------------------------------------------
 
-		if ( ( GAME_ENGINE->IsKeyDown(VK_RIGHT) || m_AutomaticFinalRun ) || GAME_ENGINE->IsKeyDown(VK_LEFT ) )
+		if ( M_MOVINGRIGHT || M_MOVINGLEFT )
 		{
-			if( GAME_ENGINE->IsKeyDown(VK_UP ) ) m_BodyFrame= 2;
-			if( GAME_ENGINE->IsKeyDown(VK_DOWN) ) m_BodyFrame= 0;
+			if( M_LOOKINGUP ) m_BodyFrame= 2;
+			if( M_LOOKINGDOWN ) m_BodyFrame= 0;
 		}
 		else
 		{
-			if( GAME_ENGINE->IsKeyDown(VK_UP ) ) m_BodyFrame= 3;
-			if( GAME_ENGINE->IsKeyDown(VK_DOWN) ) m_BodyFrame= 1;
+			if( M_LOOKINGUP  ) m_BodyFrame= 3;
+			if( M_LOOKINGDOWN ) m_BodyFrame= 1;
 		}
 
 
@@ -397,13 +546,13 @@ void Player::CalculateStateAndFrame(){
 }
 
 
-void Player::CalculateBulletSpawn()
+void AIAgentPlayer::CalculateBulletSpawn()
 {
-	// POINTING DIR RAFINEREN
+	// POINTING DIR REFINING
 	m_BulletDir= m_PointingDir;
-	if (GAME_ENGINE->IsKeyDown(VK_UP) || GAME_ENGINE->IsKeyDown(VK_DOWN)){
-		if (!( GAME_ENGINE->IsKeyDown(VK_RIGHT) || m_AutomaticFinalRun ) && !GAME_ENGINE->IsKeyDown( VK_LEFT)){
-			m_BulletDir.x=0; // geen L of R
+	if (M_LOOKINGUP || M_LOOKINGDOWN){
+		if (!M_MOVINGRIGHT || !M_MOVINGLEFT){
+			m_BulletDir.x=0; // no L or R
 		}
 		if( m_State == STATE_CRAWL ){
 			m_BulletDir.x= m_PointingDir.x;
@@ -412,7 +561,7 @@ void Player::CalculateBulletSpawn()
 	}
 
 
-	// SCHIET POS BEPALEN --------------------------------------------------------------
+	// SHOOTING POSITION DETERMINATION --------------------------------------------------------------
 	m_CenterPos= m_Pos;
 	m_CenterPos.y-= m_LegsSize.y;
 
@@ -422,14 +571,14 @@ void Player::CalculateBulletSpawn()
 	switch( m_State ){
 	case STATE_NORMAL:
 
-		if( GAME_ENGINE->IsKeyDown(VK_UP) ){
+        if( M_LOOKINGUP && !M_LOOKINGDOWN){
 			m_BulletSpawn.y= m_CenterPos.y-21;
 			xDis= 3;
 		}else{
 			m_BulletSpawn.y= m_CenterPos.y-5;
 			xDis= 12;
 		}
-		// Hier moet meer blahblah...
+		// This needs more
 		break;
 
 	case STATE_CRAWL :
@@ -465,7 +614,7 @@ void Player::CalculateBulletSpawn()
 }
 
 
-void Player::Paint()
+void AIAgentPlayer::Paint()
 {
 	// DEBUG ------------------------------------------------------------------------------------------------
 
@@ -477,21 +626,21 @@ void Player::Paint()
 
 
 	if( m_InvincebleTimer>0 ){
-		if( rand()%4<3 ){
+		if( rand()%10<3 ){
 			//--//--//--//--//
-			DrawPlayer();   // large script
+			DrawAIAgentPlayer();   // large script
 			//--//--//--//--//
 		}
 	}else{
 		//--//--//--//--//
-		DrawPlayer();   // large script
+		DrawAIAgentPlayer();   // large script
 		//--//--//--//--//
 	}
 
 
 	GAME_ENGINE->SetTransformMatrix(*m_MatViewPtr );
-	DOUBLE2 schetmLingsBoven= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() );
-	//DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) );
+	DOUBLE2 schetmLingsBoven= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2() ); //TOP LEFT
+	//DOUBLE2 schetmRechtsOnder= (*m_MatViewPtr).Inverse().TransformPoint( DOUBLE2(GAME_ENGINE->GetWidth(), GAME_ENGINE->GetHeight()) ); //BOTTOM RIGHT
 
 	GAME_ENGINE->SetColor(5,2,255, 100);
 	DOUBLE2 MedailSize(8,16);
@@ -502,20 +651,19 @@ void Player::Paint()
 		clip.bottom = clip.top  +MedailSize.y;
 
 	for( int i=0; i<m_Lives; ++i ){
-		//GAME_ENGINE->FillRect(schetmLingsBoven.x+10 + MedailSize.x*1.5*i, schetmLingsBoven.y+ 10, MedailSize.x, MedailSize.y);
 		GAME_ENGINE->DrawBitmap( m_BmpSpritePtr, schetmLingsBoven.x+4 + MedailSize.x*1.2*i, schetmLingsBoven.y+1, clip );
 	}
 }
 
 
-void Player::DrawPlayer(){
+void AIAgentPlayer::DrawAIAgentPlayer(){
 
 	MATRIX3X2 matCenter, matTranslate, matScale, matRotate;
 	matScale.SetAsScale(m_PointingDir.x, 1);
 	RECT2 clip;
 	DOUBLE2 croawlSize(34, 17), jumpSize(20,16), swimSize(17,15);
 
-	/// EN NU DE GROTSTE SCITCH VAN MIJN LEVEN:
+	/// AND NOW THE BIGGEST SWITCH OF MY LIFE
 	switch (m_State){
 
 	case STATE_CRAWL:
@@ -647,15 +795,16 @@ void Player::DrawPlayer(){
 }
 
 
-void Player::SetGlobalVars(ObjectList *objectListPtr, DOUBLE2 LevelMax)
+void AIAgentPlayer::SetGlobalVars(ObjectList *objectListPtr, DOUBLE2 LevelMax)
 {
 	//m_HitTerrainPtr = hitTerrainPtr;
 	m_ObjectListPtr= objectListPtr;
 	m_LevelMax= LevelMax;
+
 }
 
 
-void Player::Jump(int force)
+void AIAgentPlayer::Jump(int force)
 {
 	for( unsigned int i=0; i<m_LevelHitRegions.size(); ++i){
 		if( m_LevelHitRegions.at(i)->HitTest(m_Pos.x, m_Pos.y) ){
@@ -669,7 +818,7 @@ void Player::Jump(int force)
 }
 
 
-bool Player::DoCollitions(HitRegion *hitVertPtr, DOUBLE2& posRef, DOUBLE2& velocityRef, HitRegion *levelHitPtr)
+bool AIAgentPlayer::DoCollitions(HitRegion *hitVertPtr, DOUBLE2& posRef, DOUBLE2& velocityRef, HitRegion *levelHitPtr)
 {
 	bool returnCollide= false;
 	//GAME_ENGINE->SetColor(225,5,255,200);
@@ -717,7 +866,7 @@ bool Player::DoCollitions(HitRegion *hitVertPtr, DOUBLE2& posRef, DOUBLE2& veloc
 }//*/
 
 
-double Player::ReturnGoodLen(double getal1, double getal2, double centerXY)
+double AIAgentPlayer::ReturnGoodLen(double getal1, double getal2, double centerXY)
 {
 	double delta= 0;
 	delta=abs( getal1 - getal2 );

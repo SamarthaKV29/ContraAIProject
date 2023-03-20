@@ -5,8 +5,7 @@
 //-----------------------------------------------------
 //#include "GameEngine.h" // zit al in ObjectBaseList
 #include "ObjectBaseList.h"
-#include "Player.h"
-#include "RandomAgent.h"
+#include "AIAgentPlayer.h"
 
 //-----------------------------------------------------
 // FlyingPuwerUp Class									
@@ -23,8 +22,7 @@ public:
 	virtual void Tick(double deltaTime );
 	virtual void Paint();
 	virtual void CollideWith( ObjectBase *colliderptr, int otherType);
-	void SetPlayerPtr(Player *playerPtr){m_PlayerPtr= playerPtr;}
-	void SetPlayerPtr(RandomAgent *randPlayer){m_RandPlayer = randPlayer;}
+	void SetPlayerPtr(AIAgentPlayer *playerPtr){m_PlayerPtr= playerPtr;}
 	int Sign(double getal){ return (getal > 0) - (getal < 0); }
 
 private: 
@@ -49,8 +47,8 @@ private:
 
 	bool m_Activated;
 
-	Player *m_PlayerPtr;
-	RandomAgent *m_RandPlayer;
+	AIAgentPlayer *m_PlayerPtr;
+
 	// -------------------------
 	// Disabling default copy constructor and default 
 	// assignment operator.

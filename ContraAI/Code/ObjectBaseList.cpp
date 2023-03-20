@@ -155,7 +155,7 @@ void ObjectList::Tick(double deltaTime){
 
 			if( iType== -1 || jType==-1 ){
 				OutputDebugString("TYPE_NOT_SET");
-				DebugBreak();
+				//DebugBreak();
 			}
 
 			if( iPtr->GetHitRegion()->HitTest( jPtr->GetHitRegion() ) ){ // ze hitten
@@ -202,6 +202,16 @@ bool ObjectList::CheckIfPlaatsExist( int plaats )
 	}
 
 	return false;
+}
+bool ObjectList::CheckIfExist(ObjectBase * ob){
+    if(ob != NULL)
+        for(int i=0; i < m_ObjectPtrVect.size()-1; i++){
+            if(ob == m_ObjectPtrVect.at(i))
+                return true;
+        }
+    return false;
+
+
 }
 
 void ObjectList::OutputStatus(){

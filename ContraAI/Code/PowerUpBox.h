@@ -5,8 +5,7 @@
 //-----------------------------------------------------
 //#include "GameEngine.h" // zit al in ObjectBaseList
 #include "ObjectBaseList.h"
-#include "Player.h"
-#include "RandomAgent.h"
+#include "AIAgentPlayer.h"
 
 //-----------------------------------------------------
 // PowerUpBox Class									
@@ -24,8 +23,8 @@ public:
 	virtual void Paint();
 	virtual void CollideWith( ObjectBase *colliderptr, int otherType);
 	//void SetPlayerPtr(ObjectBase *playerPtr){m_PlayerPtr= playerPtr;}
-	void SetPlayerPtr(Player *playerPtr){m_PlayerPtr= playerPtr;}
-	void SetPlayerPtr(RandomAgent *randPlayer){m_RandPlayer = randPlayer;}
+	void SetPlayerPtr(AIAgentPlayer *playerPtr){m_PlayerPtr= playerPtr;}
+
 private: 
 	//-------------------------------------------------
 	// Datamembers								
@@ -36,8 +35,8 @@ private:
 	double m_AnimationTick;
 	int m_AnimationSense;
 
-	Player *m_PlayerPtr;
-	RandomAgent *m_RandPlayer;
+	AIAgentPlayer *m_PlayerPtr;
+
 	// Power up's constants
 	int m_BulletType; // eigenlijk powerUpType
 	static const int BULLET_NORMAL		= 0;

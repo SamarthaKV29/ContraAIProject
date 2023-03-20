@@ -10,9 +10,6 @@
 //-----------------------------------------------------------------
 #include "GameWinMain.h"
 #include "GameEngine.h"
-#include <string>
-#include <iostream>
-
 
 #include "Contra.h"	
 //-----------------------------------------------------------------
@@ -24,9 +21,6 @@
 //-----------------------------------------------------------------
 // Windows Functions
 //-----------------------------------------------------------------
-
-
-
 int _tmain()
 {
 	// Enable run-time memory leak check for debug builds.
@@ -36,16 +30,11 @@ int _tmain()
 	WinMain(GetModuleHandle(0), 0, 0, SW_SHOW);
 }
 
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow)
 {
 	if (GAME_ENGINE == NULL) return FALSE; // create the game engine and exit if it fails
 
-	String CmdLn = szCmdLine;
-	AIAgent = false;
+	GAME_ENGINE->SetGame(new Contra());	// any class that implements AbstractGame
 	
-	GAME_ENGINE->SetGame(new Contra(AIAgent));	// any class that implements AbstractGame
-
-
 	return GAME_ENGINE->Run(hInstance, iCmdShow); // run the game engine and return the result
 }

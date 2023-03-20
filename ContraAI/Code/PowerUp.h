@@ -5,7 +5,7 @@
 //-----------------------------------------------------
 #include "GameEngine.h"
 #include "ObjectBaseList.h"
-#include "Player.h"
+#include "AIAgentPlayer.h"
 
 //-----------------------------------------------------
 // PowerUp Class									
@@ -22,7 +22,7 @@ public:
 	virtual void Tick(double deltaTime );
 	virtual void Paint();
 	virtual void CollideWith( ObjectBase *colliderptr, int otherType);
-	void SetPlayerPtr(Player *playerPtr){m_PlayerPtr= playerPtr;}
+	void SetPlayerPtr(AIAgentPlayer *playerPtr){m_PlayerPtr= playerPtr;}
 	//void SetPlayerPtr(ObjectBase *playerPtr){m_PlayerPtr= playerPtr;}
 
 private: 
@@ -41,7 +41,7 @@ private:
 
 	static Bitmap *m_BmpSpritePtr;
 
-	Player *m_PlayerPtr;
+	AIAgentPlayer *m_PlayerPtr;
 
 	//HitRegion *m_HitTerrainPtr;
 	double m_OnGround;

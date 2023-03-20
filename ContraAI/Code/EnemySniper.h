@@ -5,6 +5,7 @@
 //-----------------------------------------------------
 #include "GameEngine.h"
 #include "ObjectBaseList.h"
+#include "GameScore.h"
 
 //-----------------------------------------------------
 // EnemySniper Class									
@@ -41,7 +42,6 @@ private:
 	double m_ShootCounter;
 
 	ObjectBase *m_PlayerPtr;
-
 	int m_State; // +/- idem aan Player
 	static const int STATE_NORMAL= 0;
 	static const int STATE_SHOOTING	= 1;

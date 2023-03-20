@@ -30,9 +30,7 @@ public:
 	virtual void Paint()=0;
 	virtual void CollideWith( ObjectBase *colliderptr, int otherType)=0; // moet iedereen op zich maken
 
-	DOUBLE2 GetPos(){ 
-		return m_Pos;
-	}
+	DOUBLE2 GetPos(){ return m_Pos; }
 
 	void SetMatView(MATRIX3X2 *matView){m_MatViewPtr= matView;}
 	void SetObjectList(ObjectList * objectListPtr)
@@ -57,6 +55,7 @@ protected:
 	static const int TYPE_ENEMY			=21;
 	static const int TYPE_ENEMY_BOX		=22;
 	static const int TYPE_ENEMY_WALKING	=23;
+    static const int TYPE_BRIDGE        =24;
 
 	DOUBLE2 m_SpriteSize;
 	MATRIX3X2 *m_MatViewPtr;
@@ -102,8 +101,11 @@ public:
 	ObjectBase *GetPointer( int plaats ){return m_ObjectPtrVect.at(plaats);}
 	
 	HitRegion *GetHitTerrain(){return m_HitTerrainPtr;}
-
-
+	int getObjectCount(){
+		return m_ObjectCount;
+	}
+	bool CheckIfPlaatsExist( int plaats );
+    bool CheckIfExist(ObjectBase * ob);
 private: 
 	//-------------------------------------------------
 	// Datamembers								
@@ -124,7 +126,7 @@ private:
 	HitRegion *m_HitTerrainPtr;
 
 	// Funcs ------------------------------------------
-	bool CheckIfPlaatsExist( int plaats );
+	
 	void OutputStatus();
 
 	// -------------------------

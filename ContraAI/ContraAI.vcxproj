@@ -50,6 +50,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\AbstractGame.cpp" />
+    <ClCompile Include="Code\AIAgentPlayer.cpp" />
     <ClCompile Include="Code\BosSniper.cpp" />
     <ClCompile Include="Code\Box.cpp" />
     <ClCompile Include="Code\Bridge.cpp" />
@@ -93,11 +98,11 @@
     <ClCompile Include="Code\Player.cpp" />
     <ClCompile Include="Code\PowerUp.cpp" />
     <ClCompile Include="Code\PowerUpBox.cpp" />
-    <ClCompile Include="Code\RandomAgent.cpp" />
     <ClCompile Include="Code\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\AbstractGame.h" />
+    <ClInclude Include="Code\AIAgentPlayer.h" />
     <ClInclude Include="Code\BosSniper.h" />
     <ClInclude Include="Code\Box.h" />
     <ClInclude Include="Code\Bridge.h" />
@@ -116,7 +121,6 @@
     <ClInclude Include="Code\Player.h" />
     <ClInclude Include="Code\PowerUp.h" />
     <ClInclude Include="Code\PowerUpBox.h" />
-    <ClInclude Include="Code\RandomAgent.h" />
     <ClInclude Include="Code\util.h" />
   </ItemGroup>
   <ItemGroup>

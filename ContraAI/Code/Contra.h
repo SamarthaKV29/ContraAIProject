@@ -15,10 +15,18 @@
 #include "GameEngine.h"
 #include "AbstractGame.h"
 #include "ObjectBaseList.h"
-#include "GameScore.h"
-#include "Player.h" 
-#include "RandomAgent.h"
-#include "util.h"
+
+#include "Box.h"
+#include "PowerUp.h"
+#include "EnemyWalking.h"
+#include "EnemySniper.h"
+#include "Bridge.h"
+#include "BosSniper.h"
+#include "PowerUpBox.h"
+#include "EvilTurret.h"
+#include "EndBoss.h"
+#include "FlyingPuwerUp.h"
+#include "AIAgentPlayer.h"
 
 //-----------------------------------------------------------------
 // Contra Class																
@@ -29,19 +37,17 @@ public:
 	//---------------------------
 	// Constructor(s)
 	//---------------------------
-	Contra(bool xAIAgent);
-	  
+	Contra();
 
 	//---------------------------
 	// Destructor
 	//---------------------------
 	virtual ~Contra();
 
-	
-
 	//---------------------------
 	// General Methods
 	//---------------------------
+
 	void GameInitialize(HINSTANCE hInstance);
 	void GameStart();				
 	void GameEnd();
@@ -57,14 +63,14 @@ public:
 	// -------------------------
 	// Member functions
 	// -------------------------
-	
+
 private:
 	// -------------------------
 	// Member functions
 	// -------------------------
 	void Draw_Hitregions();
 	void DoCameraMovement(double deltaTime, DOUBLE2 playerPos);
-	bool m_AIAgent;
+
 	// -------------------------
 	// Datamembers
 	// -------------------------
@@ -75,8 +81,8 @@ private:
 	DOUBLE2 m_SpawnersArr[NUM_SPAWNERS];
 	double m_SpawnTime;
 
-	Player *m_PlayerPtr;
-	RandomAgent *m_RandPlayer;
+	AIAgentPlayer *m_PlayerPtr;
+	
 	DOUBLE2 m_PosCamera, m_LevelMax, m_MousePos;
 
 	ObjectList * m_ObjectListPtr;
@@ -111,4 +117,3 @@ private:
 	Contra(const Contra& tRef);
 	Contra& operator=(const Contra& tRef);
 };
-
